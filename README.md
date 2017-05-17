@@ -19,7 +19,7 @@ const jsonar = require('jsonarr')
 		"surprise": true,
 		"good": "yes",
 		"sub": {
-			"index": 2
+			"tree": 2
 		}
 	},
 	"arr": [
@@ -39,28 +39,31 @@ PHP Array
 <?php
 
 array(
-	"test" => "abc",
-	"hello" => array(
-		1,
-		2,
-		"string"
-	),
-	"tada" => array(
-		"surprise" => true,
-		"good" => "yes",
-		"sub" => array(
-			"index" => 2
-		)
-	),
-	"arr" => array(
-		array(
-			"test" => 0
-		),
+    "test" => "abc",
+    "hello" => array(
+        1,
+        2,
+        "string"
+    ),
+    "tada" => array(
+		    "surprise" => true,
+		    "good" => "yes",
+		    "sub" => array(
+            "tree" => 2
+        )
+    ),
+    "arr" => array(
+        array(
+            "test" => 0
+		    ),
 
-		array(
-			"test" => 1
-		)
-	)
+        array(
+            "test" => 1
+		    )
+    )
 );
 
 ```
+
+## License
+MIT © [oknoorap](https://github.com/oknoorap)
