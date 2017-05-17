@@ -1,11 +1,11 @@
 # :sunny: JSONAR
-Convert JSON to PHP native Array.
+Convert JSON or javascript object to PHP native Array.
 
 ## Install
 Using NPM  
 `npm install jsonar --save`
 
-Using JSON  
+Using Yarn  
 `yarn add jsonar`
 
 ## Usage
