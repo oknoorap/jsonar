@@ -9,58 +9,70 @@ Using JSON
 `yarn add jsonar`
 
 ## Usage
-JSON  
 ```javascript
+const fs = require('fs')
+const path = require('path')
 const jsonar = require('jsonarr')
-{
-	"test": "abc",
-	"hello": [1, 2 "string"],
-	"tada": {
-		"surprise": true,
-		"good": "yes",
-		"sub": {
-			"tree": 2
-		}
-	},
-	"arr": [
-		{
-			"test": 0
-		},
+const jsonStr = fs.readFileSync(path.join(__dirname, 'test.json'), 'ascii')
 
-		{
-			"test": 1
-		}
-	]
+console.log(jsonStr)
+/**
+* Example of json file
+
+{
+  "test": "abc",
+  "hello": [1, 2 "string"],
+  "tada": {
+    "surprise": true,
+    "good": "yes",
+    "sub": {
+      "tree": 2
+    }
+  },
+  "arr": [
+    {
+      "id": "plntX",
+	  "content": "Planet X"
+    },
+
+    {
+      "id": "plntY",
+	  "content": "Planet Y"
+    }
+  ]
 }
+*/
 ```
 
-PHP Array  
+PHP Array Output  
 ```php
 <?php
 
 array(
-    "test" => "abc",
-    "hello" => array(
-        1,
-        2,
-        "string"
-    ),
-    "tada" => array(
-		    "surprise" => true,
-		    "good" => "yes",
-		    "sub" => array(
-            "tree" => 2
-        )
-    ),
-    "arr" => array(
-        array(
-            "test" => 0
-		    ),
+	"test" => "abc",
+	"hello" => array(
+		1,
+		2,
+		"string"
+	),
+	"tada" => array(
+		"surprise" => true,
+		"good" => "yes",
+		"sub" => array(
+			"tree" => 2
+		)
+	),
+	"arr" => array(
+		array(
+			"id" => "plntX",
+			"content" => "Planet X"
+		),
 
-        array(
-            "test" => 1
-		    )
-    )
+		array(
+			"id" => "plntY",
+			"content" => "Planet Y"
+		)
+	)
 );
 
 ```
