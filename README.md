@@ -12,7 +12,7 @@ Using JSON
 ```javascript
 const fs = require('fs')
 const path = require('path')
-const jsonar = require('jsonarr')
+const jsonar = require('jsonar')
 const jsonStr = fs.readFileSync(path.join(__dirname, 'test.json'), 'ascii')
 
 console.log(jsonStr)
