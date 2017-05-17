@@ -46,8 +46,6 @@ console.log(jsonStr)
 
 PHP Array Output  
 ```php
-<?php
-
 array(
 	"test" => "abc",
 	"hello" => array(
