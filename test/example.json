@@ -1,0 +1,27 @@
+{
+  "greetings": "Hello",
+  "answers": 42,
+  "inception": {
+    "nested": {
+      "object": true
+    },
+    "array": [
+      "string",
+      true,
+      100,
+      {
+        "inception": true
+      }
+    ]
+  },
+  "playlist": [
+    {
+      "id": "DHyUYg8X31c",
+      "desc": "Do Robots Deserve Rights? What if Machines Become Conscious?"
+    },
+    {
+      "id": "ijFm6DxNVyI",
+      "desc": "The Most Efficient Way to Destroy the Universe - False Vacuum"
+    }
+  ]
+}
