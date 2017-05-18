@@ -20,24 +20,29 @@ console.log(jsonStr)
 * Example of json file
 
 {
-  "test": "abc",
-  "hello": [1, 2 "string"],
-  "tada": {
-    "surprise": true,
-    "good": "yes",
-    "sub": {
-      "tree": 2
-    }
-  },
-  "arr": [
-    {
-      "id": "plntX",
-	  "content": "Planet X"
+  "greetings": "Hello",
+  "answers": 42,
+  "inception": {
+    "nested": {
+      "object": true
     },
-
+    "array": [
+      "string",
+      true,
+      100,
+      {
+        "inception": true
+      }
+    ]
+  },
+  "playlist": [
     {
-      "id": "plntY",
-	  "content": "Planet Y"
+      "id": "DHyUYg8X31c",
+      "desc": "Do Robots Deserve Rights? What if Machines Become Conscious?"
+    },
+    {
+      "id": "ijFm6DxNVyI",
+      "desc": "The Most Efficient Way to Destroy the Universe - False Vacuum"
     }
   ]
 }
@@ -47,33 +52,44 @@ console.log(jsonStr)
 PHP Array Output  
 ```php
 array(
-	"test" => "abc",
-	"hello" => array(
-		1,
-		2,
-		"string"
-	),
-	"tada" => array(
-		"surprise" => true,
-		"good" => "yes",
-		"sub" => array(
-			"tree" => 2
-		)
-	),
-	"arr" => array(
-		array(
-			"id" => "plntX",
-			"content" => "Planet X"
-		),
-
-		array(
-			"id" => "plntY",
-			"content" => "Planet Y"
-		)
-	)
+        "greetings" => "Hello",
+        "answers" => 42,
+        "inception" => array(
+                "nested" => array(
+                        "object" => true
+                ),
+                "array" => array(
+                        "string",
+                        true,
+                        100,
+                        array(
+                                "inception" => true
+                        )
+                )
+        ),
+        "playlist" => array(
+                array(
+                        "id" => "DHyUYg8X31c",
+                        "desc" => "Do Robots Deserve Rights? What if Machines Become Conscious?"
+                ),
+                array(
+                        "id" => "ijFm6DxNVyI",
+                        "desc" => "The Most Efficient Way to Destroy the Universe - False Vacuum"
+                )
+        )
 );
-
 ```
+
+### Options
+`jsonar(json: Object | String, prettify?: Boolean = false, indent?: Number = 1, withTab?: Boolean = true)`
+
+
+| Arguments | Description |
+| --- | --- |
+| **json** | JSON string or Javascript Object. |
+| **prettify** | Pretty Format. |
+| **indent** | How many indentation you want to use. |
+| **withTab** | Using space or tab. Set false if you wanna use space. |
 
 ## License
 MIT © [oknoorap](https://github.com/oknoorap)
