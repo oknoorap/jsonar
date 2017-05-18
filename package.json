@@ -37,5 +37,8 @@
     "esnext": true,
     "space": true,
     "semicolon": false
+  },
+  "dependencies": {
+    "lodash": "^4.17.4"
   }
 }
