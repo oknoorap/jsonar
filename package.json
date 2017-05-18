@@ -1,0 +1,41 @@
+{
+  "name": "jsonar",
+  "version": "1.0.0",
+  "description": "Convert JSON to PHP native Array",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "xo && ava --verbose"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oknoorap/jsonar.git"
+  },
+  "keywords": [
+    "json",
+    "php",
+    "php-array"
+  ],
+  "author": "Ribhararnus Pracutian <oknoorap@gmail.com> (https://www.oknoorap.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/oknoorap/jsonar/issues"
+  },
+  "homepage": "https://github.com/oknoorap/jsonar#readme",
+  "devDependencies": {
+    "ava": "^0.19.1",
+    "xo": "^0.18.2"
+  },
+  "ava": {
+    "files": [
+      "test/test.js"
+    ]
+  },
+  "xo": {
+    "esnext": true,
+    "space": true,
+    "semicolon": false
+  }
+}
