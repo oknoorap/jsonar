@@ -1,4 +1,4 @@
-const {isPlainObject, isArray, isString} = require('lodash')
+const isPlainObject = require('lodash.isplainobject')
 
 const phpLexer = {
   L_PARENTHESIS: '(',
@@ -11,6 +11,14 @@ const phpLexer = {
 const indentType = {
   SPACE: ' ',
   TAB: '\t'
+}
+
+const isString = str => {
+  return typeof str === 'string'
+}
+
+const isArray = arr => {
+  return typeof arr === 'object' && Array.isArray(arr)
 }
 
 const isJSON = json => {

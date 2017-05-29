@@ -39,6 +39,9 @@
     "semicolon": false
   },
   "dependencies": {
-    "lodash": "^4.17.4"
-  }
+    "lodash.isplainobject": "^4.0.6"
+  },
+  "files": [
+    "index.js"
+  ]
 }
