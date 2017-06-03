@@ -5,7 +5,8 @@ const phpLexer = {
   R_PARENTHESIS: ')',
   ARRAY_POINTER: '=>',
   ARRAY_KEYWORD: 'array',
-  NULL_KEYWORD: '""',
+  NULL_KEYWORD: 'null',
+  EMPTY_KEYWORD: '""',
   COMMA: ','
 }
 
@@ -33,7 +34,7 @@ const isJSON = json => {
 const parser = (obj, indent, tree = 1, indentCharTab) => {
   tree = tree < 0 ? 0 : tree
   const result = []
-  const objSize = typeof obj === 'object' ? Object.keys(obj).length : 0
+  const objSize = typeof obj === 'object' && obj !== null ? Object.keys(obj).length : 0
   const hasIndent = indent && indent > 0
   const indentChar = indentCharTab ? indentType.TAB : indentType.SPACE
 
@@ -61,18 +62,6 @@ const parser = (obj, indent, tree = 1, indentCharTab) => {
     if (hasIndent) {
       arr.push(' ')
     }
-  }
-
-  if ((!obj || objSize === 0) && isPlainObject(obj)) {
-    result.push(phpLexer.ARRAY_KEYWORD)
-    result.push(phpLexer.L_PARENTHESIS)
-    result.push(phpLexer.R_PARENTHESIS)
-    return result.join('')
-  }
-
-  if (!obj) {
-    result.push(phpLexer.NULL_KEYWORD)
-    return result.join('')
   }
 
   if (isPlainObject(obj)) {
@@ -122,6 +111,17 @@ const parser = (obj, indent, tree = 1, indentCharTab) => {
     return result.join('')
   } else if (isString(obj)) {
     return JSON.stringify(obj)
+  } else if ((!obj || objSize === 0) && isPlainObject(obj)) {
+    result.push(phpLexer.ARRAY_KEYWORD)
+    result.push(phpLexer.L_PARENTHESIS)
+    result.push(phpLexer.R_PARENTHESIS)
+    return result.join('')
+  } else if (obj === null) {
+    result.push(phpLexer.NULL_KEYWORD)
+    return result.join(null)
+  } else if (isNaN(obj)) {
+    result.push(phpLexer.EMPTY_KEYWORD)
+    return result.join('')
   }
 
   return obj
