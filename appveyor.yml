@@ -26,3 +26,9 @@ test_script:
 
 # Don't actually build.
 build: off
+
+# Branches
+branches:
+  only:
+  - develop
+skip_tags: true
