@@ -5,6 +5,7 @@ const phpLexer = {
   R_PARENTHESIS: ')',
   ARRAY_POINTER: '=>',
   ARRAY_KEYWORD: 'array',
+  NULL_KEYWORD: '""',
   COMMA: ','
 }
 
@@ -32,7 +33,7 @@ const isJSON = json => {
 const parser = (obj, indent, tree = 1, indentCharTab) => {
   tree = tree < 0 ? 0 : tree
   const result = []
-  const objSize = Object.keys(obj).length
+  const objSize = typeof obj === 'object' ? Object.keys(obj).length : 0
   const hasIndent = indent && indent > 0
   const indentChar = indentCharTab ? indentType.TAB : indentType.SPACE
 
@@ -66,6 +67,11 @@ const parser = (obj, indent, tree = 1, indentCharTab) => {
     result.push(phpLexer.ARRAY_KEYWORD)
     result.push(phpLexer.L_PARENTHESIS)
     result.push(phpLexer.R_PARENTHESIS)
+    return result.join('')
+  }
+
+  if (!obj) {
+    result.push(phpLexer.NULL_KEYWORD)
     return result.join('')
   }
 
