@@ -31,6 +31,13 @@ const isJSON = json => {
   }
 }
 
+const literal = string => {
+  return {
+    isLiteral: true,
+    string
+  }
+}
+
 const parser = (obj, indent, tree = 1, indentCharTab) => {
   tree = tree < 0 ? 0 : tree
   const result = []
@@ -64,7 +71,9 @@ const parser = (obj, indent, tree = 1, indentCharTab) => {
     }
   }
 
-  if (isPlainObject(obj)) {
+  if (isPlainObject(obj) && obj.isLiteral) {
+    return obj.string
+  } else if (isPlainObject(obj)) {
     result.push(phpLexer.ARRAY_KEYWORD)
     result.push(phpLexer.L_PARENTHESIS)
     addNewLineTo(result)
@@ -127,7 +136,7 @@ const parser = (obj, indent, tree = 1, indentCharTab) => {
   return obj
 }
 
-module.exports = (json, prettify = false, indent = 1, indentCharTab = true) => {
+exports.arrify = (json, prettify = false, indent = 1, indentCharTab = true) => {
   const validJSON = isJSON(json)
   let object = validJSON || {}
   object = isPlainObject(json) ? json : object
@@ -135,3 +144,5 @@ module.exports = (json, prettify = false, indent = 1, indentCharTab = true) => {
   const phpArray = parser(object, (prettify === false) ? 0 : indent, 1, indentCharTab)
   return `${phpArray};`
 }
+
+exports.literal = literal
