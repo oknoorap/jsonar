@@ -127,7 +127,7 @@ const parser = (obj, indent, tree = 1, indentCharTab) => {
   return obj
 }
 
-module.exports = (json, prettify = false, indent = 1, indentCharTab = true) => {
+exports.arrify = (json, prettify = false, indent = 1, indentCharTab = true) => {
   const validJSON = isJSON(json)
   let object = validJSON || {}
   object = isPlainObject(json) ? json : object
