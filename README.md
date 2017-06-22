@@ -50,7 +50,7 @@ console.log(jsonStr)
 }
 */
 
-const phpArray = jsonar.arrify(jsonStr)
+const phpArray = jsonar.arrify(jsonStr, {prettify: true})
 ```
 
 PHP Array Output  
@@ -85,18 +85,19 @@ array(
 );
 ```
 
-### Options
-`jsonar.arrify(json: Object | String, prettify?: Boolean = false, indent?: Number = 1, withTab?: Boolean = true)`
-
+### Methods
+`jsonar.arrify(json: Object | String, options: Object)`
 
 | Arguments | Description |
 | --- | --- |
 | **json** | JSON string or Javascript Object. |
-| **prettify** | Pretty Format. |
-| **indent** | How many indentation you want to use. |
-| **withTab** | Using space or tab. Set false if you wanna use space. |
+| **options** | Default options are: `{ prettify: false, indent: 1, space: false, quote: jsonar.quoteTypes.DOUBLE }` |
 
 `jsonar.literal(string)`
+
+### Constants
+`jsonar.quoteTypes.SINGLE = '`  
+`jsonar.quoteTypes.DOUBLE = "`
 
 ## License
 MIT © [oknoorap](https://github.com/oknoorap)
