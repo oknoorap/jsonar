@@ -1,3 +1,5 @@
+/* eslint-disable quotes */
+const escapeQuotes = require('escape-quotes')
 const isPlainObject = require('lodash.isplainobject')
 
 const phpLexer = {
@@ -6,13 +8,18 @@ const phpLexer = {
   ARRAY_POINTER: '=>',
   ARRAY_KEYWORD: 'array',
   NULL_KEYWORD: 'null',
-  EMPTY_KEYWORD: '""',
+  EMPTY_KEYWORD: "''",
   COMMA: ','
 }
 
-const indentType = {
+const indentTypes = {
   SPACE: ' ',
   TAB: '\t'
+}
+
+const quoteTypes = {
+  SINGLE: "'",
+  DOUBLE: '"'
 }
 
 const isString = str => {
@@ -38,12 +45,12 @@ const literal = string => {
   }
 }
 
-const parser = (obj, indent, tree = 1, indentCharTab) => {
+const parser = (obj, options, tree = 1) => {
   tree = tree < 0 ? 0 : tree
   const result = []
   const objSize = typeof obj === 'object' && obj !== null ? Object.keys(obj).length : 0
-  const hasIndent = indent && indent > 0
-  const indentChar = indentCharTab ? indentType.TAB : indentType.SPACE
+  const hasIndent = options.indent > 0
+  const indentChar = options.space ? indentTypes.SPACE : indentTypes.TAB
 
   const addTabTo = (arr, treeCount) => {
     if (!treeCount && isNaN(treeCount)) {
@@ -52,7 +59,7 @@ const parser = (obj, indent, tree = 1, indentCharTab) => {
 
     if (hasIndent) {
       const indentChars = []
-      for (let i = 0; i < indent * treeCount; i++) {
+      for (let i = 0; i < options.indent * treeCount; i++) {
         indentChars.push(indentChar)
       }
       arr.push(indentChars.join(''))
@@ -81,14 +88,14 @@ const parser = (obj, indent, tree = 1, indentCharTab) => {
     let index = 0
     for (const key in obj) {
       if (Object.prototype.hasOwnProperty.call(obj, key)) {
-        const arrKey = JSON.stringify(key)
+        const arrKey = options.quote + escapeQuotes(key) + options.quote
         const arrValue = obj[key]
         addTabTo(result)
         result.push(arrKey)
         addSpaceTo(result)
         result.push(phpLexer.ARRAY_POINTER)
         addSpaceTo(result)
-        result.push(parser(arrValue, indent, tree + 1, indentCharTab))
+        result.push(parser(arrValue, options, tree + 1))
         index++
       }
 
@@ -108,7 +115,7 @@ const parser = (obj, indent, tree = 1, indentCharTab) => {
     obj.forEach((item, index) => {
       addNewLineTo(result)
       addTabTo(result)
-      result.push(parser(item, indent, tree + 1, indentCharTab))
+      result.push(parser(item, options, tree + 1))
       if (index < obj.length - 1) {
         result.push(phpLexer.COMMA)
       } else {
@@ -119,7 +126,7 @@ const parser = (obj, indent, tree = 1, indentCharTab) => {
     result.push(phpLexer.R_PARENTHESIS)
     return result.join('')
   } else if (isString(obj)) {
-    return JSON.stringify(obj)
+    return options.quote + escapeQuotes(obj) + options.quote
   } else if ((!obj || objSize === 0) && isPlainObject(obj)) {
     result.push(phpLexer.ARRAY_KEYWORD)
     result.push(phpLexer.L_PARENTHESIS)
@@ -136,12 +143,23 @@ const parser = (obj, indent, tree = 1, indentCharTab) => {
   return obj
 }
 
-exports.arrify = (json, prettify = false, indent = 1, indentCharTab = true) => {
+exports.quoteTypes = quoteTypes
+
+exports.arrify = (json, options) => {
+  const defaultOptions = Object.assign({}, {
+    prettify: false,
+    indent: 1,
+    space: false,
+    quote: quoteTypes.DOUBLE
+  })
+  options = Object.assign(defaultOptions, options)
+  options.indent = (options.prettify === false) ? 0 : options.indent
+
   const validJSON = isJSON(json)
   let object = validJSON || {}
   object = isPlainObject(json) ? json : object
 
-  const phpArray = parser(object, (prettify === false) ? 0 : indent, 1, indentCharTab)
+  const phpArray = parser(object, options)
   return `${phpArray};`
 }
 
