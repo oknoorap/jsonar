@@ -48,9 +48,9 @@ const literal = string => {
 const parser = (obj, options, tree = 1) => {
   tree = tree < 0 ? 0 : tree
   const result = []
-  const objSize = typeof obj === 'object' && obj !== null ? Object.keys(obj).length : 0
   const hasIndent = options.indent > 0
   const indentChar = options.space ? indentTypes.SPACE : indentTypes.TAB
+  let objSize = typeof obj === 'object' && obj !== null ? Object.keys(obj).length : 0
 
   const addTabTo = (arr, treeCount) => {
     if (!treeCount && isNaN(treeCount)) {
@@ -83,7 +83,10 @@ const parser = (obj, options, tree = 1) => {
   } else if (isPlainObject(obj)) {
     result.push(phpLexer.ARRAY_KEYWORD)
     result.push(phpLexer.L_PARENTHESIS)
-    addNewLineTo(result)
+
+    if (Object.keys(obj).length > 0) {
+      addNewLineTo(result)
+    }
 
     let index = 0
     for (const key in obj) {
@@ -99,31 +102,45 @@ const parser = (obj, options, tree = 1) => {
         index++
       }
 
-      if (index < objSize) {
+      if ((index < objSize && options.trailingComma === false) || options.trailingComma) {
         result.push(phpLexer.COMMA)
+      }
+
+      if (index < objSize) {
         addNewLineTo(result)
       }
     }
 
-    addNewLineTo(result)
-    addTabTo(result, tree - 1)
+    if (Object.keys(obj).length > 0) {
+      addNewLineTo(result)
+      addTabTo(result, tree - 1)
+    }
+
     result.push(phpLexer.R_PARENTHESIS)
     return result.join('')
   } else if (isArray(obj)) {
+    objSize = obj.length - 1
     result.push(phpLexer.ARRAY_KEYWORD)
     result.push(phpLexer.L_PARENTHESIS)
+
     obj.forEach((item, index) => {
       addNewLineTo(result)
       addTabTo(result)
+
       result.push(parser(item, options, tree + 1))
-      if (index < obj.length - 1) {
+
+      if ((index < objSize && options.trailingComma === false) || options.trailingComma) {
         result.push(phpLexer.COMMA)
-      } else {
+      }
+
+      if (index === objSize) {
         addNewLineTo(result)
         addTabTo(result, tree - 1)
       }
     })
+
     result.push(phpLexer.R_PARENTHESIS)
+
     return result.join('')
   } else if (isString(obj)) {
     return options.quote + escapeQuotes(obj) + options.quote
@@ -150,6 +167,7 @@ exports.arrify = (json, options) => {
     prettify: false,
     indent: 1,
     space: false,
+    trailingComma: false,
     quote: quoteTypes.DOUBLE
   })
   options = Object.assign(defaultOptions, options)
