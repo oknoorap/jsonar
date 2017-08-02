@@ -189,10 +189,13 @@ exports.arrify = (json, options) => {
   return `${phpArray};`
 }
 
-exports.parse = codes => {
+exports.parse = (codes, convertObject = false) => {
   const AST = phpParser.parseEval(codes)
   const iterator = items => {
     const normalizeValue = item => {
+      let mapItems = []
+      let callArgs = ''
+
       switch (item.value.kind) {
         case 'number':
           return parseInt(item.value.value, 10)
@@ -203,16 +206,39 @@ exports.parse = codes => {
         case 'entry':
           return 'baba'
 
+        case 'call':
+          mapItems = item.value.arguments.map(item => {
+            switch (item.kind) {
+              case 'string':
+                return quoteTypes.SINGLE + item.value + quoteTypes.SINGLE
+
+              case 'boolean':
+                return JSON.parse(item.value)
+
+              case 'number':
+                return parseInt(item.value, 10)
+
+              default:
+                return item.value
+            }
+          })
+
+          callArgs = mapItems.length > 0 ? ` ${mapItems.join(', ')} ` : ''
+
+          return literal(`${item.value.what.name}(${callArgs})`)
+
         case 'string':
           return item.value.value
 
-        case 'call':
-          console.log(JSON.stringify(item, null, 2))
-          return literal(item.value.what.name)
+        case 'boolean':
+          return JSON.parse(item.value.value)
+
+        default:
+          return JSON.stringify(item.value.value)
       }
     }
 
-    let json = {}
+    const json = {}
     let arry = []
 
     items.forEach(item => {
@@ -230,12 +256,17 @@ exports.parse = codes => {
     return json
   }
 
+  let object = {}
+
   if (AST.kind === 'program') {
-    console.log(JSON.stringify(AST, null, 2))
-    return iterator(AST.children[0].items)
+    object = iterator(AST.children[0].items)
   }
 
-  return {}
+  if (convertObject === false) {
+    object = JSON.stringify(convertObject)
+  }
+
+  return object
 }
 
 exports.literal = literal
