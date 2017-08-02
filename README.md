@@ -85,6 +85,11 @@ array(
 );
 ```
 
+```javascript
+// Convert array to json again
+jsonar.parse(`your php array string here`)
+```
+
 ### Methods
 `jsonar.arrify(json: Object | String, options: Object)`
 
@@ -92,6 +97,13 @@ array(
 | --- | --- |
 | **json** | JSON string or Javascript Object. |
 | **options** | Default options are: `{ prettify: false, indent: 1, space: false, quote: jsonar.quoteTypes.DOUBLE }` |
+
+`jsonar.parse(phpString: String, convertToObject: Boolean)`
+
+| Arguments | Description |
+| --- | --- |
+| **phpString** | PHP String. |
+| **convertToObject** | Default: false |
 
 `jsonar.literal(string)`
 
