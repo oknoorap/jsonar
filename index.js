@@ -1,6 +1,14 @@
 /* eslint-disable quotes */
 const escapeQuotes = require('escape-quotes')
 const isPlainObject = require('lodash.isplainobject')
+const PhpParser = require('php-parser')
+
+const phpParser = new PhpParser({
+  parser: {
+    locations: false,
+    extractDoc: true
+  }
+})
 
 const phpLexer = {
   L_PARENTHESIS: '(',
@@ -45,7 +53,7 @@ const literal = string => {
   }
 }
 
-const parser = (obj, options, tree = 1) => {
+const arrify = (obj, options, tree = 1) => {
   tree = tree < 0 ? 0 : tree
   const result = []
   const hasIndent = options.indent > 0
@@ -98,7 +106,7 @@ const parser = (obj, options, tree = 1) => {
         addSpaceTo(result)
         result.push(phpLexer.ARRAY_POINTER)
         addSpaceTo(result)
-        result.push(parser(arrValue, options, tree + 1))
+        result.push(arrify(arrValue, options, tree + 1))
         index++
       }
 
@@ -127,7 +135,7 @@ const parser = (obj, options, tree = 1) => {
       addNewLineTo(result)
       addTabTo(result)
 
-      result.push(parser(item, options, tree + 1))
+      result.push(arrify(item, options, tree + 1))
 
       if ((index < objSize && options.trailingComma === false) || options.trailingComma) {
         result.push(phpLexer.COMMA)
@@ -177,8 +185,88 @@ exports.arrify = (json, options) => {
   let object = validJSON || {}
   object = isPlainObject(json) ? json : object
 
-  const phpArray = parser(object, options)
+  const phpArray = arrify(object, options)
   return `${phpArray};`
+}
+
+exports.parse = (codes, convertObject = false) => {
+  const AST = phpParser.parseEval(codes)
+  const iterator = items => {
+    const normalizeValue = item => {
+      let mapItems = []
+      let callArgs = ''
+
+      switch (item.value.kind) {
+        case 'number':
+          return parseInt(item.value.value, 10)
+
+        case 'array':
+          return iterator(item.value.items)
+
+        case 'entry':
+          return 'baba'
+
+        case 'call':
+          mapItems = item.value.arguments.map(item => {
+            switch (item.kind) {
+              case 'string':
+                return quoteTypes.SINGLE + item.value + quoteTypes.SINGLE
+
+              case 'boolean':
+                return JSON.parse(item.value)
+
+              case 'number':
+                return parseInt(item.value, 10)
+
+              default:
+                return item.value
+            }
+          })
+
+          callArgs = mapItems.length > 0 ? ` ${mapItems.join(', ')} ` : ''
+
+          return literal(`${item.value.what.name}(${callArgs})`)
+
+        case 'string':
+          return item.value.value
+
+        case 'boolean':
+          return JSON.parse(item.value.value)
+
+        default:
+          return JSON.stringify(item.value.value)
+      }
+    }
+
+    const json = {}
+    let arry = []
+
+    items.forEach(item => {
+      if (item.key) {
+        json[item.key.value] = normalizeValue(item)
+      } else {
+        arry = arry.concat(normalizeValue(item))
+      }
+    })
+
+    if (arry.length > 0) {
+      return arry
+    }
+
+    return json
+  }
+
+  let object = {}
+
+  if (AST.kind === 'program') {
+    object = iterator(AST.children[0].items)
+  }
+
+  if (convertObject === false) {
+    object = JSON.stringify(convertObject)
+  }
+
+  return object
 }
 
 exports.literal = literal
