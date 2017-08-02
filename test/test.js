@@ -60,3 +60,11 @@ test('js object to PHP array', t => {
   }
   t.is(jsonar.arrify(obj), 'array("universe"=>"expanding","galaxy"=>__php_fn("andromeda"));')
 })
+
+test('parsing object should be valid', async t => {
+  await jsonFile().then(result => {
+    const phpArray = jsonar.arrify(result)
+    const abc = jsonar.parse(phpArray, true)
+    t.deepEqual(abc, JSON.parse(result))
+  })
+})

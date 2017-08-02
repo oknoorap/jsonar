@@ -10,7 +10,7 @@ const output = jsonar.arrify(json, {prettify: true, quote: jsonar.quoteTypes.SIN
 console.log(output)
 
 const secondJson = Object.assign({}, JSON.parse(json))
-secondJson.fn = jsonar.literal('__( \'Hello World\' , \'text-domain\' )')
+secondJson.fn = jsonar.literal('__( \'Hello World\' , \'text-domain\', true, 10 )')
 
 const secondOutput = jsonar.arrify(secondJson, {prettify: true, quote: jsonar.quoteTypes.SINGLE})
 console.log(secondOutput)
