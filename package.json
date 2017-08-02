@@ -1,6 +1,6 @@
 {
   "name": "jsonar",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "description": "Convert JSON to PHP native Array",
   "main": "index.js",
   "directories": {
