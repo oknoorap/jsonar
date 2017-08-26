@@ -91,21 +91,21 @@ jsonar.parse(`your php array string here`)
 ```
 
 ### Methods
-`jsonar.arrify(json: Object | String, options: Object)`
+#### `jsonar.arrify(json: Object | String, options: Object)`
 
 | Arguments | Description |
 | --- | --- |
 | **json** | JSON string or Javascript Object. |
 | **options** | Default options are: `{ prettify: false, indent: 1, space: false, quote: jsonar.quoteTypes.DOUBLE }` |
 
-`jsonar.parse(phpString: String, convertToObject: Boolean)`
+#### `jsonar.parse(phpString: String, options: Boolean)`
 
 | Arguments | Description |
 | --- | --- |
 | **phpString** | PHP String. |
-| **convertToObject** | Default: false |
+| **options** | Default options are: `{ asObject: true, emptyRules: {} }`, `emptyRules` should be objects that has the same structure with your object, if you don't set `emptyRules` all empty objects will be converted as primitive array `[]`, because PHP AST read an empty object as array |
 
-`jsonar.literal(string)`
+#### `jsonar.literal(string)`
 
 ### Constants
 `jsonar.quoteTypes.SINGLE = '`  
