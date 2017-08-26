@@ -1,4 +1,6 @@
 {
+  "emptyarr": [],
+  "emptyobj": {},
   "greetings": "Hello",
   "answers": 42,
   "inception": {

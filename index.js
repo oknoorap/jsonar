@@ -1,6 +1,7 @@
 /* eslint-disable quotes */
 const escapeQuotes = require('escape-quotes')
 const isPlainObject = require('lodash.isplainobject')
+const isEmpty = require('lodash.isempty')
 const PhpParser = require('php-parser')
 
 const phpParser = new PhpParser({
@@ -48,8 +49,8 @@ const isJSON = json => {
 
 const literal = string => {
   return {
-    isLiteral: true,
-    string
+    ___$isLiteral: true,
+    ___$string: string
   }
 }
 
@@ -86,8 +87,8 @@ const arrify = (obj, options, tree = 1) => {
     }
   }
 
-  if (isPlainObject(obj) && obj.isLiteral) {
-    return obj.string
+  if (isPlainObject(obj) && obj.___$isLiteral) {
+    return obj.___$string
   } else if (isPlainObject(obj)) {
     result.push(phpLexer.ARRAY_KEYWORD)
     result.push(phpLexer.L_PARENTHESIS)
@@ -168,6 +169,22 @@ const arrify = (obj, options, tree = 1) => {
   return obj
 }
 
+const applyEmptyRules = (object, emptyRules) => {
+  for (const key in object) {
+    if (Object.prototype.hasOwnProperty.call(object, key)) {
+      if (key in emptyRules) {
+        if (isEmpty(object[key])) {
+          object[key] = emptyRules[key]
+        } else {
+          object[key] = Object.assign(object[key], applyEmptyRules(object[key], emptyRules[key]))
+        }
+      }
+    }
+  }
+
+  return object
+}
+
 exports.quoteTypes = quoteTypes
 
 exports.arrify = (json, options) => {
@@ -189,7 +206,12 @@ exports.arrify = (json, options) => {
   return `${phpArray};`
 }
 
-exports.parse = (codes, convertObject = false) => {
+exports.parse = (codes, options = {}) => {
+  options = Object.assign({
+    asObject: true,
+    emptyRules: {}
+  }, options)
+
   const AST = phpParser.parseEval(codes)
   const iterator = items => {
     const normalizeValue = item => {
@@ -201,10 +223,11 @@ exports.parse = (codes, convertObject = false) => {
           return parseInt(item.value.value, 10)
 
         case 'array':
-          return iterator(item.value.items)
+          if (item.value.items.length === 0) {
+            return []
+          }
 
-        case 'entry':
-          return 'baba'
+          return iterator(item.value.items)
 
         case 'call':
           mapItems = item.value.arguments.map(item => {
@@ -224,7 +247,6 @@ exports.parse = (codes, convertObject = false) => {
           })
 
           callArgs = mapItems.length > 0 ? ` ${mapItems.join(', ')} ` : ''
-
           return literal(`${item.value.what.name}(${callArgs})`)
 
         case 'string':
@@ -260,10 +282,11 @@ exports.parse = (codes, convertObject = false) => {
 
   if (AST.kind === 'program') {
     object = iterator(AST.children[0].items)
+    object = applyEmptyRules(object, options.emptyRules)
   }
 
-  if (convertObject === false) {
-    object = JSON.stringify(convertObject)
+  if (options.asObject === false) {
+    object = JSON.stringify(object)
   }
 
   return object
