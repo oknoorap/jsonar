@@ -4,6 +4,13 @@ const isPlainObject = require('lodash.isplainobject')
 const isEmpty = require('lodash.isempty')
 const PhpParser = require('php-parser')
 
+const escapeStr = val => {
+    val = escapeQuotes(val)
+    val = val.replace(/\n/g, "\\n")
+    val = val.replace(/"/g, "\\\"")
+    return val
+}
+
 const phpParser = new PhpParser({
   parser: {
     locations: false,
@@ -100,7 +107,7 @@ const arrify = (obj, options, tree = 1) => {
     let index = 0
     for (const key in obj) {
       if (Object.prototype.hasOwnProperty.call(obj, key)) {
-        const arrKey = options.quote + escapeQuotes(key) + options.quote
+        const arrKey = options.quote + escapeStr(key) + options.quote
         const arrValue = obj[key]
         addTabTo(result)
         result.push(arrKey)
@@ -152,7 +159,7 @@ const arrify = (obj, options, tree = 1) => {
 
     return result.join('')
   } else if (isString(obj)) {
-    return options.quote + escapeQuotes(obj) + options.quote
+    return options.quote + escapeStr(obj) + options.quote
   } else if ((!obj || objSize === 0) && isPlainObject(obj)) {
     result.push(phpLexer.ARRAY_KEYWORD)
     result.push(phpLexer.L_PARENTHESIS)
