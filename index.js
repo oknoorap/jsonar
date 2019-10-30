@@ -5,10 +5,10 @@ const isEmpty = require('lodash.isempty')
 const PhpParser = require('php-parser')
 
 const escapeStr = val => {
-    val = escapeQuotes(val)
-    val = val.replace(/\n/g, "\\n")
-    val = val.replace(/"/g, "\\\"")
-    return val
+  val = escapeQuotes(val)
+  val = val.replace(/\n/g, "\\n")
+  val = val.replace(/"/g, "\\\"")
+  return val
 }
 
 const phpParser = new PhpParser({
